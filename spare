@@ -1,0 +1,41 @@
+var checkComplete_Interval = setInterval(() => {
+    // 獲取 diveLinker 的屬性
+    //let userName = diveLinker_index.getAttr("3684d51accdd4e21b742ed50c2eb131c");
+
+    //console.log(diveLinker_index.getIOList());
+    //addGameState(turn, event, action, buySell, cash, stockCode, stockNumber)
+    // 檢查是否有找到對應結果
+    if (1) {
+        // 更新 dynamicText 的內容為獲取到的值
+        username = diveLinker.getAttr("3684d51accdd4e21b742ed50c2eb131c");
+        password = diveLinker.getAttr("dc692c9c120546bd8d48240facd8bef3");
+        login = diveLinker.getAttr("d36dab8ddc874d9b868b29d7950ef482");
+        document.getElementById("dynamicText00").innerHTML = `這是更新後的 username: ${username}`;
+        document.getElementById("dynamicText01").innerHTML = `這是更新後的 password: ${password}`;
+        document.getElementById("dynamicText02").innerHTML = `這是更新後的 login: ${login}`;
+        //document.getElementById("dynamicText03").innerHTML = `這是更新後的 login: ${}`;
+        //document.getElementById("dynamicText04").innerHTML = `這是更新後的 value_array: ${}`;
+        /**/
+        /*
+        */
+        // 更新值
+        autoUsername = username;
+        autoPassword = password;
+
+        // 將變數值寫入表單
+        document.getElementById("username").value = autoUsername;
+        document.getElementById("password").value = autoPassword;
+
+        if (username == CorrectUsername && password == CorrectPassword && login == 1) {
+            document.getElementById("dynamicText04").innerHTML = `成功登入`;
+        }
+        else {
+            document.getElementById("dynamicText04").innerHTML = `尚未成功登入`;
+        }
+
+        // 計數器增加
+        //counter = counter + 10;
+    }
+
+
+}, 1000);

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GO DIVE</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <p>hello dive v3 003</p>
+    <div id="outputArea"></div>
+    <script>
+        let payload = {};
+
+        window.addEventListener("message", chatDIVE, false);
+
+        function storeData(data) {
+            if (data.name === 'UserID') {
+                payload.UserID = data.value;
+            } else if (data.name === 'value') {
+                payload.value = data.value;
+            }
+        }
+
+        function updateDisplay(message) {
+            let outputArea = document.getElementById('outputArea');
+            if (!outputArea) {
+                outputArea = document.createElement('div');
+                outputArea.id = 'outputArea';
+                document.body.appendChild(outputArea);
+            }
+            outputArea.innerHTML = message;
+        }
+
+        function sendData(payload) {
+            $.ajax({
+                type: "POST",
+                url: "save_data003.php",
+                data: payload,
+                success: function (response) {
+                    console.log('Data saved:', response);
+                },
+                error: function (xhr, status, error) {
+                    console.error('AJAX Error:', error);
+                    console.error('Status:', status);
+                    console.error('Response:', xhr.responseText);
+                }
+            });
+        }
+
+        function chatDIVE(event) {
+            let title = event.data.title;
+            let data = event.data.data;
+
+            if (title === 'DIVE_SEND_TO_IFRAME') {
+                storeData(data);
+                updateDisplay(`Current Payload: ${JSON.stringify(payload)}`);
+
+                if (payload.UserID && payload.value) {
+                    sendData(payload);
+                    payload = {};
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GO DIVE</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <p>hello dive v2</p>
+    <div id="output-container"></div> <!-- 用於顯示接收的參數提示 -->
+
+    <!-- 輸入框 -->
+    <label for="userID">UserID:</label>
+    <input type="text" id="userID" placeholder="Enter UserID">
+    <br>
+    <label for="value">Value:</label>
+    <input type="text" id="value" placeholder="Enter Value">
+    <br>
+
+    <!-- 按鈕 -->
+    <button id="sendButton">Send Data</button>
+
+    <script>
+        // 註冊按鈕點擊事件
+        document.getElementById("sendButton").addEventListener("click", function () {
+            // 獲取輸入框的值
+            let userID = document.getElementById("userID").value;
+            let value = document.getElementById("value").value;
+
+            // 在頁面上顯示輸入的參數
+            let outputContainer = document.getElementById("output-container");
+            let output = document.createElement("div");
+            output.textContent = `Sending UserID: ${userID}, Value: ${value}`;
+            outputContainer.appendChild(output);
+
+            // 發送 AJAX 請求到後端
+            $.ajax({
+                type: "POST",
+                url: "save_data.php", // PHP 文件的 URL
+                data: {
+                    UserID: userID,
+                    value: value
+                },
+                success: function (response) {
+                    // 在頁面顯示伺服器的回應
+                    let responseOutput = document.createElement("div");
+                    responseOutput.textContent = `Server Response: ${response}`;
+                    outputContainer.appendChild(responseOutput);
+
+                    console.log("Data saved:", response);
+                },
+                error: function (xhr, status, error) {
+                    let errorOutput = document.createElement("div");
+                    errorOutput.textContent = `AJAX Error: ${error}`;
+                    outputContainer.appendChild(errorOutput);
+
+                    console.error("AJAX Error:", error);
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

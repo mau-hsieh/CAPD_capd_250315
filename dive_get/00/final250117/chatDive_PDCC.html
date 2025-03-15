@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GO DIVE</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <p>006 hello dive </p>
+    <div id="outputArea"></div>
+    <script>
+        let payload = {};
+
+        window.addEventListener("message", chatDIVE, false);
+
+        function storeData(data) {
+            if (data.name === 'UserID') {
+                payload.UserID = data.value;
+            } else if (data.name === 'value') {
+                payload.value = data.value;
+            } else if (data.name.startsWith('PDCC_right')) {
+                let index = data.name.replace('PDCC_right', '');
+                payload[`PDCC_right${index}`] = data.value;
+            }
+        }
+
+        function updateDisplay(message) {
+            let outputArea = document.getElementById('outputArea');
+            if (!outputArea) {
+                outputArea = document.createElement('div');
+                outputArea.id = 'outputArea';
+                document.body.appendChild(outputArea);
+            }
+            outputArea.innerHTML = message;
+        }
+
+        function sendData(payload) {
+            $.ajax({
+                type: "POST",
+                url: "save_data_test.php",
+                data: payload,
+                success: function (response) {
+                    console.log('Data saved:', response);
+                },
+                error: function (xhr, status, error) {
+                    console.error('AJAX Error:', error);
+                    console.error('Status:', status);
+                    console.error('Response:', xhr.responseText);
+                }
+            });
+        }
+
+        function chatDIVE(event) {
+            let title = event.data.title;
+            let data = event.data.data;
+
+            if (title === 'DIVE_SEND_TO_IFRAME') {
+                storeData(data);
+
+                // 更新顯示
+                updateDisplay(`Current Payload: ${JSON.stringify(payload)}`);
+
+                // 必填字段列表
+                const requiredFields = [
+                    'UserID',
+                    'value',
+                    ...Array.from({ length: 6 }, (_, i) => `PDCC_right${String(i + 1).padStart(2, '0')}`)
+                ];
+
+                // 確認所有必填字段都有值
+                const allFieldsFilled = requiredFields.every(field => payload[field] !== undefined && payload[field] !== null);
+                updateDisplay(`Current Payload: ${JSON.stringify(allFieldsFilled)}`);
+                if (allFieldsFilled) {
+                    sendData(payload);
+                    payload = {}; // 清空 payload
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

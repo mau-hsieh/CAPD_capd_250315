@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GO DIVE</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <p>hello dive v2</p>
+
+    <!-- 測試按鈕和輸入框 -->
+    <div>
+        <label for="UserID">UserID:</label>
+        <input type="text" id="UserID" placeholder="Enter UserID">
+        <br>
+        <label for="value">Value:</label>
+        <input type="text" id="value" placeholder="Enter Value">
+        <br>
+        <button id="sendData">Send Data</button>
+    </div>
+
+    <div id="output-container"></div> <!-- 用於顯示伺服器回應 -->
+
+    <script>
+        $(document).ready(function () {
+            // 綁定按鈕點擊事件
+            $('#sendData').click(function () {
+                // 獲取輸入框的值
+                let UserID = $('#UserID').val();
+                let value = $('#value').val();
+
+                // 構造測試參數
+                let data = {
+                    UserID: UserID,
+                    value: value,
+                    right01: 1,
+                    right02: 2,
+                    right03: 3,
+                    right04: 4,
+                    right05: 5,
+                    right06: 6,
+                    wrong01: 0,
+                    wrong02: 1,
+                    wrong03: 2
+                };
+
+                // 發送 AJAX 請求到 PHP 後端
+                $.ajax({
+                    type: "POST",
+                    url: "save_data.php", // PHP 文件的 URL
+                    data: data,
+                    success: function (response) {
+                        console.log("Server Response:", response);
+
+                        // 顯示伺服器回應
+                        let outputContainer = $('#output-container');
+                        outputContainer.append('<div>Server Response: ' + response + '</div>');
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("AJAX Error:", error);
+
+                        // 顯示錯誤訊息
+                        let outputContainer = $('#output-container');
+                        outputContainer.append('<div>AJAX Error: ' + error + '</div>');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,4 @@
+$servername = "localhost";
+$username = "dive_db";
+$password = "Ie]c1P5pq7-]l6_9";
+$dbname = "dive_db";

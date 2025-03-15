@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GO DIVE</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <p>hello dive v4</p>
+
+    <!-- 測試按鈕和輸入框 -->
+    <div>
+        <label for="UserID">UserID:</label>
+        <input type="text" id="UserID" placeholder="Enter UserID">
+        <br>
+        <label for="value">Value:</label>
+        <input type="text" id="value" placeholder="Enter Value">
+        <br>
+        <button id="sendData">Send Data</button>
+    </div>
+
+    <div id="output-container"></div> <!-- 用於顯示伺服器回應 -->
+
+    <script>
+        $(document).ready(function () {
+            // 綁定按鈕點擊事件
+            $('#sendData').click(function () {
+                let UserID = $('#UserID').val();
+                let value = $('#value').val();
+
+                let data = {
+                    UserID: UserID,
+                    value: value,
+                    right01: 1,
+                    right02: 2,
+                    right03: 3,
+                    right04: 4,
+                    right05: 5,
+                    right06: 6,
+                    wrong01: 0,
+                    wrong02: 1,
+                    wrong03: 2
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "save_data.php",
+                    data: data,
+                    success: function (response) {
+                        let outputContainer = $('#output-container');
+                        outputContainer.append('<div>Server Response: ' + response + '</div>');
+                    },
+                    error: function (xhr, status, error) {
+                        let outputContainer = $('#output-container');
+                        outputContainer.append('<div>AJAX Error: ' + error + '</div>');
+                    }
+                });
+            });
+
+            // 註冊事件監聽器
+            window.addEventListener("message", chatDIVE, false);
+
+	         function chatDIVE(event) {
+	            let title = event.data.title;
+	            let data = event.data.data;
+	            if (title == 'DIVE_SEND_TO_IFRAME') {
+	                // 將接收到的資料輸出到控制台
+	                console.log(JSON.stringify(data));
+	                console.log(data.name, data.value);
+	
+	                // 根據參數名稱進行相應操作
+	                if (data.name == 'UserID') {
+	                    console.log('UserID received:', data.value);
+	                }
+	                if (data.name == 'test002') {
+	                    console.log('test002 received:', data.value);
+	                }
+	
+	                // 在網頁上顯示接收到的參數
+	                let output = document.createElement('div');
+	                output.textContent = `Received: ${data.name} - ${data.value}`;
+	                document.body.appendChild(output);
+	
+	                // 發送 AJAX 請求到 PHP 後端以儲存資料庫
+	                $.ajax({
+	                    type: "POST",
+	                    url: "save_data.php", // PHP 文件的 URL
+	                    data: { name: data.name, value: data.value },
+	                    success: function (response) {
+	                        console.log('Data saved:', response);
+	                    },
+	                    error: function (xhr, status, error) {
+	                        console.error('AJAX Error:', error);
+	                    }
+	                });
+	            }
+	        }
+
+
+        });
+    </script>
+</body>
+
+</html>

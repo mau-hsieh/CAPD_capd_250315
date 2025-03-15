@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Load Iframes Sequentially</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+    <div id="rawdiv">
+        <iframe class="diveFrame diveFrame00"
+        src="https://dive.nutn.edu.tw/Experiment/kaleTestExperiment5.jsp?eid=31714&record=false" name="diveFrame01"
+        frameborder="0"></iframe>
+        <iframe class="diveFrame diveFrame01"
+            src="https://dive.nutn.edu.tw/Experiment/kaleTestExperiment5.jsp?eid=31714&record=false" name="diveFrame01"
+            frameborder="0"></iframe>
+
+        <iframe class="diveFrame diveFrame02"
+            src="https://dive.nutn.edu.tw/Experiment/kaleTestExperiment5.jsp?eid=31715&record=false" name="diveFrame02"
+            frameborder="0"></iframe>
+
+        <iframe class="diveFrame diveFrame03"
+            src="https://dive.nutn.edu.tw/Experiment/kaleTestExperiment5.jsp?eid=31716&record=false" name="diveFrame03"
+            frameborder="0"></iframe>
+
+        <iframe class="diveFrame diveFrame04"
+            src="https://dive.nutn.edu.tw/Experiment/kaleTestExperiment5.jsp?eid=31717&record=false" name="diveFrame04"
+            frameborder="0"></iframe>
+
+        <iframe class="diveFrame diveFrame05"
+            src="https://dive.nutn.edu.tw/Experiment/kaleTestExperiment5.jsp?eid=31606&record=false" name="diveFrame05"
+            frameborder="0"></iframe>
+
+        <iframe class="diveFrame diveFrame06"
+            src="https://dive.nutn.edu.tw/Experiment/kaleTestExperiment5.jsp?eid=31724&record=false" name="diveFrame06"
+            frameborder="0"></iframe>
+
+        <iframe class="diveFrame diveFrame07"
+            src="https://dive.nutn.edu.tw/Experiment/kaleTestExperiment5.jsp?eid=31725&record=false" name="diveFrame07"
+            frameborder="0"></iframe>
+
+        <iframe class="diveFrame diveFrame08"
+            src="https://dive.nutn.edu.tw/Experiment/kaleTestExperiment5.jsp?eid=31736&record=false" name="diveFrame08"
+            frameborder="0"></iframe>
+
+        <iframe class="diveFrame diveFrame09"
+            src="https://dive.nutn.edu.tw/Experiment/kaleTestExperiment5.jsp?eid=31735&record=false" name="diveFrame09"
+            frameborder="0"></iframe>
+
+        <iframe class="diveFrame diveFrame10"
+            src="https://dive.nutn.edu.tw/Experiment/kaleTestExperiment5.jsp?eid=31734&record=false" name="diveFrame10"
+            frameborder="0"></iframe>
+
+        <iframe class="diveFrame diveFrame11"
+            src="https://dive.nutn.edu.tw/Experiment/kaleTestExperiment5.jsp?eid=31726&record=false" name="diveFrame11"
+            frameborder="0"></iframe>
+
+        <iframe class="diveFrame diveFrame12"
+            src="https://dive.nutn.edu.tw/Experiment/kaleTestExperiment5.jsp?eid=31727&record=false" name="diveFrame12"
+            frameborder="0"></iframe>
+
+        <iframe class="diveFrame diveFrame13"
+            src="https://dive.nutn.edu.tw/Experiment/kaleTestExperiment5.jsp?eid=31728&record=false" name="diveFrame13"
+            frameborder="0"></iframe>
+
+        <iframe class="diveFrame diveFrame14"
+            src="https://dive.nutn.edu.tw/Experiment/kaleTestExperiment5.jsp?eid=31729&record=false" name="diveFrame14"
+            frameborder="0"></iframe>
+
+        <iframe class="diveFrame diveFrame15"
+            src="https://dive.nutn.edu.tw/Experiment/kaleTestExperiment5.jsp?eid=31730&record=false" name="diveFrame15"
+            frameborder="0"></iframe>
+
+        <iframe class="diveFrame diveFrame16"
+            src="https://dive.nutn.edu.tw/Experiment/kaleTestExperiment5.jsp?eid=31774&record=false" name="diveFrame16"
+            frameborder="0"></iframe>
+
+        <iframe class="diveFrame diveFrame17"
+            src="https://dive.nutn.edu.tw/Experiment/kaleTestExperiment5.jsp?eid=31732&record=false" name="diveFrame17"
+            frameborder="0"></iframe>
+
+        <iframe class="diveFrame diveFrame18"
+            src="https://dive.nutn.edu.tw/Experiment/kaleTestExperiment5.jsp?eid=31733&record=false" name="diveFrame18"
+            frameborder="0"></iframe>
+
+        <iframe class="diveFrame diveFrame19"
+            src="https://dive.nutn.edu.tw/Experiment/kaleTestExperiment5.jsp?eid=31746&record=false" name="diveFrame19"
+            frameborder="0"></iframe>
+
+        <iframe class="diveFrame diveFrame20"
+            src="https://dive.nutn.edu.tw/Experiment/kaleTestExperiment5.jsp?eid=31740&record=false" name="diveFrame20"
+            frameborder="0"></iframe>
+    </div>
+
+
+    <script>
+        // 延遲 500 毫秒後開始加載第一個 iframe
+        setTimeout(function () {
+            updateIframeSrc(0);
+        }, 500);
+
+        function updateIframeSrc(index) {
+            var iframe = $("#rawdiv iframe").eq(index);
+
+            // 檢查是否還有 iframe 需要加載
+            if (iframe.length === 0) {
+                return; // 如果沒有，則停止遞迴
+            }
+
+            // 延遲加載，先設置空的 src
+            iframe.attr("src", "about:blank");
+
+            // 延遲設置真正的 src，這裡設置為 500 毫秒後
+            setTimeout(function () {
+                iframe.attr("src", iframe.attr("data-src"));
+
+                // 當 iframe 加載完成後調用
+                iframe.on("load", function () {
+                    setTimeout(function () {
+                        updateIframeSrc(++index);
+                    }, 500); // 延遲 500 毫秒後加載下一個
+                });
+            }, 500);
+        }
+
+    </script>
+</body>
+
+</html>

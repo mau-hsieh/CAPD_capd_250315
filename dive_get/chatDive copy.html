@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GO DIVE</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <p>hello dive v2</p>
+    <div id="output-container"></div> <!-- 用於顯示接收的參數提示 -->
+    <script>
+        // 註冊事件監聽器，當接收到 postMessage 時呼叫 chatDIVE 函數
+        window.addEventListener("message", chatDIVE, false);
+
+        function chatDIVE(event) {
+            let title = event.data.title;
+            let data = event.data.data;
+
+            if (title === 'DIVE_SEND_TO_IFRAME') {
+                console.log('Received data:', data);
+
+                // 容器，用於顯示所有接收到的參數
+                let outputContainer = document.getElementById("output-container");
+
+                // 處理類似參數（right01~right06 和 wrong01~wrong03）
+                processParameters(data, 'right', 6, outputContainer);
+                processParameters(data, 'wrong', 3, outputContainer);
+
+                // 顯示其他參數（例如 name 和 value）
+                if (data.name && data.value) {
+                    let output = document.createElement('div');
+                    output.textContent = `Received: ${data.name} - ${data.value}`;
+                    outputContainer.appendChild(output);
+                }
+
+                // 發送 AJAX 請求到後端
+                sendDataToServer(data);
+            }
+        }
+
+        // 處理類似參數的函數
+        function processParameters(data, prefix, count, container) {
+            for (let i = 1; i <= count; i++) {
+                let key = `${prefix}0${i}`;
+                if (data[key] !== undefined) {
+                    console.log(`${key} received:`, data[key]);
+
+                    // 在頁面上新增提示
+                    let output = document.createElement('div');
+                    output.textContent = `Received ${key}: ${data[key]}`;
+                    container.appendChild(output);
+                }
+            }
+        }
+
+        // 發送資料到伺服器的函數
+        function sendDataToServer(data) {
+            $.ajax({
+                type: "POST",
+                url: "save_data.php", // PHP 文件的 URL
+                data: {
+                    name: data.name || null,
+                    value: data.value || null,
+                    right01: data.right01 || null,
+                    right02: data.right02 || null,
+                    right03: data.right03 || null,
+                    right04: data.right04 || null,
+                    right05: data.right05 || null,
+                    right06: data.right06 || null,
+                    wrong01: data.wrong01 || null,
+                    wrong02: data.wrong02 || null,
+                    wrong03: data.wrong03 || null,
+                },
+                success: function (response) {
+                    console.log('Data saved:', response);
+                },
+                error: function (xhr, status, error) {
+                    console.error('AJAX Error:', error);
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
